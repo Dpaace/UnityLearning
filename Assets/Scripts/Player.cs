@@ -46,6 +46,10 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
 
+    [SerializeField]
+    private AudioClip _laserSoundClip;
+    private AudioSource _audioSource;
+
 
 
 
@@ -58,6 +62,7 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(0, 0, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _audioSource = GetComponent<AudioSource>();
 
         if(_spawnManager == null)
         {
@@ -66,7 +71,15 @@ public class Player : MonoBehaviour
 
         if(_uiManager == null)
         {
-            Debug.Log("The UI Manager is null");
+            Debug.LogError("The UI Manager is null");
+        }
+        if (_audioSource == null)
+        {
+            Debug.LogError("The Audio Source on the player is null");
+        }
+        else
+        {
+            _audioSource.clip = _laserSoundClip;
         }
 
     }
@@ -125,6 +138,10 @@ public class Player : MonoBehaviour
         {
             Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
         }
+
+        _audioSource.Play();
+
+
     }
 
     public void Damage()
