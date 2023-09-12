@@ -254,7 +254,7 @@ Transform:
   m_GameObject: {fileID: 132560231}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.74, y: 1.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -809,7 +809,6 @@ MonoBehaviour:
   _rightEngine: {fileID: 1034087418}
   _score: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _audioSource: {fileID: 0}
 --- !u!212 &822179553
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -871,7 +870,7 @@ Transform:
   m_GameObject: {fileID: 822179551}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.32, y: -2.09, z: 0}
+  m_LocalPosition: {x: -2.83, y: -1.15, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
