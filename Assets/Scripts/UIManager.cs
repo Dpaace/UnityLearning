@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+
     [SerializeField]
-    private Text _scoreText;
+    private Text _scoreText, _bestScoreText;
+
+    private int _score=0, _bestScore; 
+
     [SerializeField]
     private Image _livesImg;
     [SerializeField]
@@ -18,12 +23,13 @@ public class UIManager : MonoBehaviour
 
     private GameManager _gameManager;
     
-    
+   
     // Start is called before the first frame update
     void Start()
     {
-
         _scoreText.text = "Score:" + 0;
+        _bestScore = PlayerPrefs.GetInt("HighScore", 0);
+        _bestScoreText.text = "Best Score: " + _bestScore;
         _gameOverText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         if (_gameManager == null)
@@ -34,7 +40,21 @@ public class UIManager : MonoBehaviour
 
     public void UpdateScore(int playerScore)
     {
+        _score += playerScore;
         _scoreText.text = "Score:" + playerScore.ToString();
+        
+    }
+
+    public void CheckForBestScore()
+    {
+        //_bestScore = _score;
+        //PlayerPrefs.SetInt("HighScore", _bestScore);
+        if (_score > _bestScore)
+        {
+            _bestScore = _score;
+            PlayerPrefs.SetInt("HighScore", _bestScore);
+            _bestScoreText.text = "Best Score: " + _bestScore.ToString();
+        }
     }
 
     public void UpdateLives(int currentLives)
@@ -63,5 +83,16 @@ public class UIManager : MonoBehaviour
             _gameOverText.text = "";
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void ResumePlay()
+    {
+        GameManager gm = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+        gm.ResumeGame();
+    }
+
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

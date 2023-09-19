@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _lives = 3;
 
+    private GameManager _gameManager;
     private SpawnManager _spawnManager;
     [SerializeField]
     private bool _isTripleShotActive = false;
@@ -50,19 +51,20 @@ public class Player : MonoBehaviour
     private AudioClip _laserSoundClip;
     private AudioSource _audioSource;
 
-
-
-
+    public bool isPlayerOne = false;
+    public bool isPlayerTwo = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
         //take the current position = new position(0,0,0)
-        transform.position = new Vector3(0, 0, 0);
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+
+
 
         if(_spawnManager == null)
         {
@@ -82,18 +84,34 @@ public class Player : MonoBehaviour
             _audioSource.clip = _laserSoundClip;
         }
 
+        if (_gameManager.isCoopMode == false)
+        {
+            transform.position = new Vector3(0, 0, 0);
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        CalculateMovement();
-
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        if(isPlayerOne == true)
         {
-            //Debug.Log("Space Key Pressed");
-            FireLaser();
+            CalculateMovement();
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && isPlayerOne == true)
+            {
+                FireLaser();
+            }
         }
+
+        if(isPlayerTwo == true)
+        {
+            CalculateMovementPLayerTwo();
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) && Time.time > _canFire && isPlayerTwo == true)
+            {
+                FireLaser();
+            }
+        }
+        
     }
 
     void CalculateMovement()
@@ -125,6 +143,40 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(11, transform.position.y, 0);
         }
     }
+
+    void CalculateMovementPLayerTwo()
+    {
+        if(Input.GetKey(KeyCode.Keypad8))
+        {
+            transform.Translate(Vector3.up * _speed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.Keypad6))
+        {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.Keypad2))
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.Keypad4))
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        }
+
+        //Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+        //transform.Translate(_speed * Time.deltaTime * direction);
+
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
+
+        if (transform.position.x > 11)
+        {
+            transform.position = new Vector3(-11, transform.position.y, 0);
+        }
+        else if (transform.position.x < -11)
+        {
+            transform.position = new Vector3(11, transform.position.y, 0);
+        }
+    }
     void FireLaser()
     {
         _canFire = Time.time + _fireRate;
@@ -140,8 +192,6 @@ public class Player : MonoBehaviour
         }
 
         _audioSource.Play();
-
-
     }
 
     public void Damage()
@@ -168,6 +218,7 @@ public class Player : MonoBehaviour
         if(_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
+            _uiManager.CheckForBestScore();
             Destroy(this.gameObject);
         }
     }
